@@ -1,0 +1,207 @@
+html, body {
+  height: 100%;
+  min-height: 100%;
+  background-size: cover; 
+  background-repeat: no-repeat;
+  background: linear-gradient(to top, #cfd9df 0%, #e2ebf0 50%, #cfd9df 100%);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.navbar {
+  background-color: #333344;
+  padding: 5px;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.navbar a {
+  color:white;
+  padding-left: 20px
+}
+
+.UIparams {
+  width: 100%;
+  margin-bottom: 10px;
+  display:  inline-block;
+  outline:  0;
+  border:  0;
+  cursor:  pointer;
+  font-weight:  600;
+  color:  #fff;
+  font-size:  14px;  
+  padding:  8px 0px;
+  border-radius:  4px;
+  background-color:  #99a9cc;
+  background-Image:  linear-gradient(180deg,#7cafbb,#3456e0);
+  box-shadow:  0 4px 11px 0 rgb(37 44 97 / 15%), 0 1px 3px 0 rgb(93 100 148 / 20%);
+  transition:  all .2s ease-out;  
+}
+
+.UIparamsFileOps {
+  width: 100%; 
+  margin-bottom: 10px;
+  display:  inline-block;
+  outline:  0;
+  border:  0;
+  cursor:  pointer;
+  font-weight:  600;
+  color:  #fff;
+  font-size:  14px;   
+  padding:  8px 0px;
+  border-radius:  4px;
+  background-color:  #7cafff;
+  background-image:  linear-gradient(180deg,#457789,#123456);
+  box-shadow:  0 4px 11px 0 rgb(37 44 97 / 15%), 0 1px 3px 0 rgb(93 100 148 / 20%);
+  transition:  all .2s ease-out
+}
+
+.UIparamsText {
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  appearance: none;
+  border-radius: 4px;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+.OKbutton {
+  background-color:  #319768;
+  background-Image:  linear-gradient(180deg,#0d7c05,#01370e);
+}
+
+.swmmDropDown {
+  padding-left: 20px;
+}
+
+.swmmNUD {
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding-left: 20px;
+}
+
+.swmmInputTime {
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding-left: 20px;
+}
+
+.swmmInputInteger {
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding-left: 20px;
+}
+
+.recharts-wrapper > ::-webkit-scrollbar {
+  width: 0px
+}
+
+.labelTop {
+  display: inline-block;
+  margin: 15px 15px 5px;
+}
+
+.displayHead {
+  height: 300px;
+  border: 4px solid black;
+  border-radius: 10px;
+}
+
+
+
+.c-multi-select-dropdown{
+  margin:100px auto;
+  font-family: 'Roboto', sans-serif;
+  position:relative;
+  width:300px;
+}
+
+.c-multi-select-dropdown__selected{
+    border:solid 1px #eee;
+    font-size:14px;
+    padding:10px;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.c-multi-select-dropdown__options{
+    display:none;
+    position: absolute;
+    box-sizing: border-box;
+    left:0;
+    width:100%;
+    list-style: none;
+    padding-left:0px;
+    border:solid 1px #eee;
+    padding:5px 0px;
+}
+
+.c-multi-select-dropdown__option{
+    display:flex;
+    align-items: center;
+    padding:6px 10px;
+    cursor:pointer;
+}
+
+.c-multi-select-dropdown__option-checkbox{
+  margin-right:6px;
+}
+
+.recharts-tooltip-wrapper {
+  z-index: 9999;
+}
+
+.recharts-layer {
+  padding: 0;
+}
+
+.recharts-line {
+  padding: 0
+}
+
+.verticalMargins {
+  margin: 15px 0px;
+}
+
+.bordered {
+  border: 1px solid rgb(37 44 97 / 15%);
+}
+
+[class*="-Input"] {
+  padding: 0px 0px!important;
+  margin: 0px 2px!important;
+}
+
+[class*="-IndicatorsContainer"] {
+  padding: 0px 0px!important;
+  margin: 0px 2px!important;
+  height: 25px;
+}
+
+[class*="-ValueContainer"] {
+  padding: 0px 0px!important;
+  margin: 0px 2px!important;
+  height: 25px;
+}
+
+[class*="-control"] {
+  overflow: hidden;
+}

@@ -1,0 +1,158 @@
+
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App {
+  max-height: 450px;
+  overflow: scroll;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 200px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.leaflet-popup-content-wrapper {
+  padding: 1px;
+  text-align: left;
+}
+
+.leaflet-popup-content {
+  margin: 3px 8px 8px 8px!important;
+  line-height: 1!important;
+  font-size: 13px;
+  font-size: 1.08333em;
+  min-height: 1px;
+}
+
+.leaflet-popup {
+  position: absolute;
+  text-align: center;
+  margin-bottom: 5px!important;
+  background-color: rgb(245, 237, 252)!important;
+  border-radius: 10px!important;
+  border: 3px solid rgba(25, 25, 250, 0.6)
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: none!important;
+  color: #333;
+  box-shadow: 0 3px 14px rgb(0 0 0 / 40%);
+}
+
+.leaflet-popup-tip {
+  width: 17px;
+  height: 0px!important; 
+  padding: 1px;
+  margin: -10px auto 0;
+  pointer-events: auto;
+  transform: rotate(45deg);
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: none;
+  border-radius: 7px 7px 2px 2px!important;
+  text-align: right!important;
+  width: 100%!important;
+  height: 12px!important;
+  font: 10px/10px Tahoma, Verdana, sans-serif!important;
+  font-weight: 700!important;
+  color: #18115f!important;
+  background-color: rgb(189, 212, 247)!important;
+  text-decoration: none;
+  background: transparent;
+  overflow: hidden!important;
+}
+
+.leaflet-tooltip.perma-node {
+  background-color: transparent;
+  border: transparent;
+  box-shadow: none;
+  margin-left: -8px;
+}
+
+.leaflet-control-container {
+  background-color:  #99a9cc;
+  background-Image:  none!important;
+  overflow: visible!important;
+}
+
+[class*="leaflet-control"] {
+  background-color:  #99a9cc;
+  background-Image:  none!important;
+  overflow: visible!important;
+}
+
+.demoTab {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color:  #99a9cc;
+  background:radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%, rgba(238, 130, 238, 1) 100%);
+}
+
+.demoTab button {
+  color:#888;
+  background-clip: text;
+  -webkit-background-clip: text;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+.demoTab button:hover {
+  color:#bbb;
+  background-color: #99a9cc;
+}
+
+.demoTab button.active {
+  color:#eee;
+  background-color: #eee;
+}
+
+.tabContent {
+  color:#ccc;
+  font-family: "Courier", "Consolas", monospace;
+  background:radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%, rgba(238, 130, 238, 1) 100%);
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+  -webkit-scrollbar: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
