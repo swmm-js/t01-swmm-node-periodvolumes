@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react"
 import { UniversalDropDown } from "./UniversalDropDown"
 import { SwmmDat } from "@fileops/swmm-node"
+import { DateTime } from 'luxon'
 import './DemoCode.css'
 
 export default function DemoCode({swmmData}) {
@@ -40,7 +41,16 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
       periodFunc = (val)=>{return new Date(val.setDate(val.getDate()+periodValue))}
       break;
     case('Month'):
-      periodFunc = (val)=>{return new Date(val.setMonth(val.getMonth()+periodValue))}
+    periodFunc = (val)=>{
+      //console.log(val)
+      let dt = DateTime.fromJSDate(val)
+      dt = dt.plus({months:1})
+      dt = dt.startOf('month')
+      //console.log(dt)
+      dt = dt.toJSDate()
+      //console.log(dt)
+      return dt
+    }
       break;
     case('Year'):
       periodFunc = (val)=>{return new Date(val.setFullYear(val.getFullYear()+periodValue))}
@@ -52,34 +62,49 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
   let theLength = theKeys.length
   let pStart = startTime
   let dStart = new Date(pStart)
+  console.log(dStart)
   let dEnd   = periodFunc(dStart)
   let pEnd   = dEnd.getTime()
-
+  let i = 0
+  // Set the start date to be after the first record, if possible
+  console.log(theLength)
+  while(pStart > theKeys[i] && pEnd > theKeys[i] && i < theLength){
+    i++
+  }
   // For every key
-  for (let i = 0; i < theLength && theKeys[i] < endTime && pStart < endTime;){
-    let key = theKeys[i]
+  console.log(theKeys[i])
+  console.log(pStart)
+  console.log(pEnd)
+  console.log(endTime)
+  // Error: If both startTime and endTime are in between valid keys,
+  // then theKeys[i] will be greater than endTime  
+  for (; i < theLength && pStart < endTime;){
+    let keyTime = theKeys[i]
     let rainSum = 0
-    let thisTime = key
     let updated = 0;
     // If the key is not between the period start and period end
     // push a new object with no sum for the period start and period end
     // update the period start and period end
     // and check the next key
     // sum all the rainfall over the following IEP periods
-    for(dStart = new Date(pStart), 
-        dEnd   = periodFunc(dStart)//new Date(dStart.setHours(dStart.getHours()+periodValue))
-        ;
-        pEnd < thisTime
-        ;
-        pStart = pEnd, 
-        dStart = new Date(pStart), 
-        dEnd   = periodFunc(dStart),//new Date(dStart.setHours(dStart.getHours()+periodValue)),
-        pEnd   = dEnd.getTime()){
-          outArray.push({
-            start: pStart, 
-            end:   pEnd,
-            vol:   0
-          })
+    for(;pEnd < keyTime && pEnd < endTime;){
+      //console.log(pStart)
+      dStart = new Date(pStart)
+      //console.log(dStart)
+      //console.log(new Date(dStart))
+      dEnd   = periodFunc(dStart)
+      //console.log(dEnd)
+      pEnd   = dEnd.getTime()
+      let valx = {
+        start: pStart, 
+        end:   pEnd,
+        vol:   0
+      }
+      //console.log(valx)
+      outArray.push(valx)
+      pStart = pEnd
+      dStart = new Date(pStart) 
+      dEnd   = periodFunc(dStart)
     }
 
     // While the key is between the start time and the end time
@@ -87,16 +112,24 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
       i < theKeys.length && 
       new Date(theKeys[i]).getTime() < pEnd; 
       ){
+        //console.log('==========================================')
         rainSum = rainSum + dataArray[theKeys[i].toString()]
         i++
         updated = 1
     }
     // Add the sum to the list of periods.
-    outArray.push({
-      start: pStart, 
-      end:   pEnd,
-      vol:   rainSum
-    })
+    if(updated){
+      //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+      console.log('===' + new Date(pStart))
+      outArray.push({
+        start: pStart, 
+        end:   pEnd,
+        vol:   rainSum
+      })
+      dEnd   = periodFunc(dStart)
+      //console.log(dEnd)
+      pEnd   = dEnd.getTime()
+    }
 
     // Move time period forward
     pStart = pEnd
@@ -130,77 +163,14 @@ function processOut(swmmData) {
 
     let x = sumEvents(
       swmmData.contents[targetRG], 
-      new Date(Date.UTC(1970, 0, 1, 0, 0, 0)).getTime(),
-      new Date(Date.UTC(2013, 0, 1, 0, 0, 0)).getTime(),
-      "Year",
+      new Date(Date.UTC(1971, 0, 1, 0, 0, 0)).getTime(),
+      new Date(Date.UTC(1972, 0, 1, 0, 0, 0)).getTime(),
+      "Month",
       1
       )
       console.log(x)
     // Detect yearly rainfall using swmmNode
-    /*if(periodType === 'Year'){
-      for(let year = startYear; year <= endYear; year++){
-        vol.push({
-          year: year, 
-          vol: SwmmDat.stormVol(swmmData.contents[targetRG], new Date(Date.UTC(year, 0, 1, 0, 0, 0)), new Date(Date.UTC(year+1, 0, 1, 0, 0, 0)))})
-      }
-      
-      // Format the storm volume JSON into readable output.
-      outString = 
-        columnHeaders([['Year', 10], ['Vol.', 24]])
-      vol.forEach((v, i)=>{
-        outString += v.year.toString().padEnd(10) +
-                    v.vol.toFixed(1).padEnd(24) + '\n'
-      })
-    }
-    // Detect monthly rainfall using swmmNode
-    if(periodType === 'Month'){
-      for(let year = startYear; year <= endYear; year++){
-        for(let month = 0; month <= 11; month++){
-          vol.push({
-            year: year, 
-            month: month+1, 
-            vol: SwmmDat.stormVol(swmmData.contents[targetRG], new Date(Date.UTC(year, month, 1, 0, 0, 0)), new Date(Date.UTC(year, month+1, 1, 0, 0, 0)))})
-        }
-      }
-      
-      // Format the storm volume JSON into readable output.
-      outString = 
-        columnHeaders([['Year', 10], ['Month', 10], ['Vol.', 24]])
-      vol.forEach((v, i)=>{
-        outString += v.year.toString().padEnd(10) +
-                     v.month.toString().padEnd(10) +
-                     v.vol.toFixed(1).padEnd(24) + '\n'
-      })
-    }
-
-    // Detect daily rainfall using swmmNode
-    if(periodType === 'Day'){
-      for(let year = startYear; year <= endYear; year++){
-        for(let month = 0; month <= 11; month++){
-          // Get the count of days in this month by taking the 0th day of the next month.
-          for(let day = 1; day <= new Date(year, month+1, 0).getDate(); day++){
-
-            vol.push({
-              year: year, 
-              // JavaScript uses a base 0-index for month
-              month: month + 1, 
-              // JavaScript uses a base 1-index for day
-              day: day,
-              vol: SwmmDat.stormVol(swmmData.contents[targetRG], new Date(Date.UTC(year, month, day, 0, 0, 0)), new Date(Date.UTC(year, month, day+1, 0, 0, 0)))})
-          }
-        }
-      }
-      
-      // Format the storm volume JSON into readable output.
-      outString = 
-        columnHeaders([['Year', 10], ['Month', 10], ['Day', 10], ['Vol.', 24]])
-      vol.forEach((v, i)=>{
-        outString += v.year.toString().padEnd(10) +
-                     v.month.toString().padEnd(10) +
-                     v.day.toString().padEnd(10) +
-                     v.vol.toFixed(1).padEnd(24) + '\n'
-      })
-    }*/
+    
 
     outString += '\n'
 
