@@ -29,7 +29,7 @@ const UniversalDropDown = ({ IDs, onChange=()=>{} }) => {
         value = {selected}
         onChange = {handleChange}
       >
-        <option value='none' disabled hidden>Select a Raingage</option>
+        <option value='none' disabled hidden>Select</option>
         {
           IDs.map((k, i) => 
             <option className='UIparams' key={i} value={k}>{k}</option>
