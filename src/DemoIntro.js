@@ -14,10 +14,12 @@ const DemoIntro = () => {
 <SiteNavBar />
   <div >
     <div style={UIBackground}><h1>swmmNode: Rainfall by Period</h1>
-      <p>This demo features swmmNode's ability to calculate a raingage's rainfall by period. Use this demo to identify yearly, monthly, or daily rainfall. Click on the <strong>'Select .dat file'</strong> button to pick a <strong>.dat</strong> file to display these results. Keep in mind that web browsers can only handle so much memory, so if your <strong>.dat</strong> file is very large, you may want to use swmmNode via node.js.
+      <p>This demo features swmmNode's ability to calculate a raingage's rainfall by period. Use this demo to identify yearly, monthly, or daily rainfall. If you want to identify individual storms, see the demo <a href="https://www.swmmreact.org/swmmReact/swmmNode_website_stormfinder/">here</a>.</p>
+      
+      <p>Click on the <strong>'Select .dat file'</strong> button to pick a <strong>.dat</strong> file and then choose a raingage to display these results. The demo file contains about 45 years of 15-minute data for one gage, and processes it in about 10 milliseconds. Keep in mind that web browsers can only handle so much memory, so if your <strong>.dat</strong> file is very large, you may want to use swmmNode via node.js.
       </p>
       <p>
-        The results are a simple demo of one of the uses of swmmNode with raingage .dat files.  You can find swmmNode compatible JavaScript below the translation, and you can always check out a copy of either swmmNode or swmmWasm for your own uses at the GitHub repo:
+        The results are a simple demo of one of the uses of swmmNode with raingage .dat files. You can find swmmNode compatible JavaScript below the translation, and you can always check out a copy of either swmmNode or swmmWasm for your own uses at the GitHub repo:
         </p>
         <p><a href='https://github.com/fileops/swmmNode'>https://github.com/fileops/swmmNode</a>
         </p> 
