@@ -19,16 +19,21 @@ useEffect(()=>{
 }, [swmmData, targetRG])
 
 /**
- * Find the rainfall elements that classify as a storm due to having a volume that
- * meets or exceeds the MSV and has a length of IEP.
- * The results will exclude values that are exactly
- * Event Time + IEP, because Events are not considered instantaneous.
+ * Sum rainfall events and group by the periodType given
+ * This is used to create yearly rainfall totals, monthly
+ * statistics, or provide general error checking prior to 
+ * utilizing swmmWasm and swmmLink for AI operations.
  * @param {IDatRecords} dataArray An instance of IDatRecords, the data for a gage in a .dat file.
- * @param {number} IEP Inter-event period, minimum time between classified storms
- * @param {number} MSV Minimum storm volume, the least amount of rain that can classify a storm
- * @returns 
+ * @param {number} startTime The start time (UNIX epoch) of the records to check.
+ * This can be prior to or after the events within dataArray.
+ * @param {number} endTime The end time (UNIX epoch) of the records to check.
+ * This can be prior to or after the events within dataArray.
+ * @param {periodType} string idicator of the summation interval units. Can be 'Hour', 'Day', 'Month', 'Year' 
+ * @param {periodValue} number Number of periodTypes that a summation interval will span. To get 6-hour intervals, use periodValue = 6 and periodType = 'Hour'
+ * @returns {}
  */
-function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
+function sumEvents(dataArray, startTime, endTime, periodType, periodValue) 
+{
   let outArray = []
   let periodFunc = ()=>{}
 
@@ -41,22 +46,10 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
       periodFunc = (val)=>{return new Date(val.setDate(val.getDate()+periodValue))}
       break;
     case('Month'):
-    // This is ridiculous. There has to be a better way to set month + 1.
-      periodFunc = (val)=>{
-        let oldVal = new Date(val)
-        let addMonth = new Date(val.setMonth(val.getMonth()+periodValue))
-        let firstDay = new Date(addMonth.setDate(1))
-        let dayStart = new Date(firstDay.setHours(0,0,0,0))
-        let dayStart2 = new Date(dayStart.setUTCHours(0,0,0,0))
-        if(dayStart2 <= oldVal){
-          addMonth = new Date(oldVal.setMonth(oldVal.getMonth()+periodValue))
-          firstDay = new Date(addMonth.setDate(1))
-          let addMonth2 = new Date(firstDay.setMonth(firstDay.getMonth()+1))
-          let firstDay2 = new Date(addMonth2.setDate(1))
-          dayStart = new Date(firstDay2.setHours(0,0,0,0))
-          dayStart2 = new Date(dayStart.setUTCHours(0,0,0,0))
-        }
-        return dayStart2
+      periodFunc = (val) => {
+        const newDate = new Date(val)
+        newDate.setUTCMonth(val.getUTCMonth() + periodValue)
+        return newDate
       }
       break;
     case('Year'):
@@ -133,7 +126,6 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
   return outArray
 }
 
-
 /**
  * Process the contents of a raingage .dat file
  * and detect storm patterns.
@@ -153,7 +145,7 @@ function processOut(swmmData) {
     let x = sumEvents(
       swmmData.contents[targetRG], 
       new Date(Date.UTC(1971, 0, 1, 0, 0, 0)).getTime(),
-      new Date(Date.UTC(1972, 0, 1, 0, 0, 0)).getTime(),
+      new Date(Date.UTC(1972, 1, 1, 0, 0, 0)).getTime(),
       "Month",
       1
       )
