@@ -8,14 +8,35 @@ export default function DemoCode({swmmData}) {
 const [outText,  setOutText] = useState()
 const [targetRG, setTargetRG] = useState()
 const [periodType, setPeriodType] = useState('Year')
+const [startDate, setStartDate] = useState()
+const [endDate, setEndDate] = useState()
 
 useEffect(()=>{
+  // Read the .dat file and process the contents
   setOutText()
   let result = ''
-  if(swmmData != null)
+  if(swmmData !== undefined && targetRG !== undefined){
     result = processOut(swmmData)
+  }
   setOutText(result)
-}, [swmmData, targetRG, periodType])
+}, [swmmData, targetRG, periodType, startDate, endDate])
+
+useEffect(()=>{
+  if(swmmData !== undefined && targetRG !== undefined){
+    // Automatically detect the date extents of the file.
+    let keys = Object.keys(swmmData.contents[targetRG])
+    let length = keys.length
+    if(length && length > 0){
+      let ds = new Date(parseInt(keys[0]))
+      let de = new Date(parseInt(keys[length-1]))
+      // Set time to 0 because nobody wants time from anywhere but 0.
+      ds.setUTCHours(0);ds.setUTCMinutes(0);ds.setUTCSeconds(0)
+      de.setUTCHours(0);de.setUTCMinutes(0);de.setUTCSeconds(0)
+      setStartDate(ds)
+      setEndDate(de)
+    }
+  }
+}, [swmmData, targetRG])
 
 /**
  * Process the contents of a raingage .dat file
@@ -26,31 +47,27 @@ useEffect(()=>{
  */
 function processOut(swmmData) {
   if(targetRG !== undefined && swmmData.contents[targetRG] !== undefined){
-    let vol = Array()
     let outString = ''
-    // Get the year extents of the file.
-    let keys = Object.keys(swmmData.contents[targetRG])
-    let startYear = new Date(parseInt(keys[0])).getFullYear()
-    let endYear = new Date(parseInt(keys[keys.length-1])).getFullYear()
 
+    // Detect yearly rainfall using swmmNode
     let x = SwmmDat.sumEvents(
       swmmData.contents[targetRG], 
-      new Date(Date.UTC(1971, 0, 1, 0, 0, 0)).getTime(),
-      new Date(Date.UTC(1972, 1, 1, 0, 0, 0)).getTime(),
+      new Date(startDate),
+      new Date(endDate),
       periodType,
       1
     )
-    // Detect yearly rainfall using swmmNode
-    console.log(x)
+
+    // Format the output into something readable.
     outString +=
       columnHeaders([["ID", 10], ["Start", 24], ["End", 24], ["Volume", 10]])
     x.forEach((v, i) => {
       let sDate = new Date(v.start)
       let eDate = new Date(v.end)
-      let sStringd = [sDate.getUTCMonth()+1, sDate.getUTCDate(), sDate.getUTCFullYear()].map(o=>o.toString().padStart(2,'0')).join('/')
-      let sStringt = [sDate.getUTCHours(), sDate.getUTCMinutes(), sDate.getUTCSeconds()].map(o=>o.toString().padStart(2,'0')).join(':')
-      let eStringd = [eDate.getUTCMonth()+1, eDate.getUTCDate(), eDate.getUTCFullYear()].map(o=>o.toString().padStart(2,'0')).join('/')
-      let eStringt = [eDate.getUTCHours(), eDate.getUTCMinutes(), eDate.getUTCSeconds()].map(o=>o.toString().padStart(2,'0')).join(':')
+      let sStringd = [sDate.getUTCMonth()+1, sDate.getUTCDate(),    sDate.getUTCFullYear()].map(o=>o.toString().padStart(2,'0')).join('/')
+      let sStringt = [sDate.getUTCHours(),   sDate.getUTCMinutes(), sDate.getUTCSeconds() ].map(o=>o.toString().padStart(2,'0')).join(':')
+      let eStringd = [eDate.getUTCMonth()+1, eDate.getUTCDate(),    eDate.getUTCFullYear()].map(o=>o.toString().padStart(2,'0')).join('/')
+      let eStringt = [eDate.getUTCHours(),   eDate.getUTCMinutes(), eDate.getUTCSeconds() ].map(o=>o.toString().padStart(2,'0')).join(':')
       outString += [
         i.toString().padEnd(10),
         (sStringd + ' ' + sStringt).padEnd(24),
@@ -77,7 +94,6 @@ function columnHeaders(columns) {
   let len = 0;
   return columns.map(val=>{
     len = len + val[1]
-    console.log(val)
     return val[0].padEnd(val[1])
   }).join('') + '\n' +
   '-'.repeat(len) + '\n'
@@ -89,12 +105,28 @@ if(outText)
     {
       swmmData &&
       <>
-      <label>Raingage:
-        <UniversalDropDown IDs={Object.keys(swmmData.contents)} onChange={setTargetRG} /> 
-      </label>
-      <label>Period:
-        <UniversalDropDown IDs={['Year', 'Month', 'Day', 'Hour']} onChange={setPeriodType} /> 
-      </label>
+        <label>Raingage:
+          <UniversalDropDown IDs={Object.keys(swmmData.contents)} onChange={setTargetRG} /> 
+        </label>
+        <label>Period:
+          <UniversalDropDown IDs={['Year', 'Month', 'Day', 'Hour']} onChange={setPeriodType} /> 
+        </label>
+        <div className="swmmForm">
+          <div className="swmmRow">
+            <label>Start:
+              <input type="date" value={
+                startDate?
+                [startDate.getUTCFullYear(), (startDate.getUTCMonth()+1).toString().padStart(2,'0'), startDate.getUTCDate().toString().padStart(2,'0')].join('-')
+                :undefined} onChange={(e)=>setStartDate(e.target.value)} className="UIparams"/> 
+            </label>
+            <label>End:
+              <input type="date" value={
+                endDate?
+                [endDate.getUTCFullYear(), (endDate.getUTCMonth()+1).toString().padStart(2,'0'), endDate.getUTCDate().toString().padStart(2,'0')].join('-')
+                :undefined} onChange={(e)=>setEndDate(e.target.value)} className="UIparams"/> 
+            </label>
+          </div>
+        </div>
       </>
     }
     

@@ -1,7 +1,84 @@
+h3 {
+  margin-left:10px;
+}
+
 input, label {
   display: block;
+  margin-top: 10px;
+}
+
+input{
+  width: 100%;
+}
+
+label {
   margin-left: 20px;
   margin-right: 20px;
-  margin-top: 10px;
-  width: 80%;
+}
+
+
+.swmmForm .swmmRow > label {
+  font-weight: 700;
+  background: var(--gradient-text);
+}
+
+.swmmForm {
+  color: white;
+ border: 3px solid black;
+ border-radius: 9px;
+ width: 99%;
+ margin: auto;
+ margin-top: 10px;
+}@media only screen and (max-width: 700px){
+  .swmmForm {
+    width: 100%
+  }
+}
+
+.swmmForm .swmmRow {
+  color: white;
+  display: flex;
+  margin-bottom: 2px;
+  margin-right: 8px;
+}
+
+.swmmForm .swmmRow > label {
+  font-size:  12px;
+  margin-top: 3px;
+  float: left;
+  width: 100%;
+  min-width: 120px;
+  color: white;
+}@media only screen and (max-width: 700px){
+  .swmmForm .swmmRow > label {
+    font-size:  16px;
+  }
+}
+
+.swmmForm .swmmRow > .UIparams {
+  height: 25px;
+  font-size: 10px;
+  padding: 3px;
+  padding-left: 5px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  width: 100%;
+}@media only screen and (max-width: 700px){
+  .swmmForm .swmmRow > .UIparams {
+    font-size:  16px;
+  }
+}
+
+.swmmForm .swmmRow > .swmmDropDown {
+  height: 25px;
+  font-size: 10px;
+  padding: 3px;
+  padding-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  width: 100%;
+}@media only screen and (max-width: 700px){
+  .swmmForm .swmmRow > .swmmDropDown {
+    font-size:  16px;
+  }
 }
