@@ -29,15 +29,34 @@ useEffect(()=>{
  */
 function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
   let outArray = []
+  let periodFunc = ()=>{}
+
+  // Adjust function for periodType:
+  switch(periodType){
+    case('Hour'):
+      periodFunc = (val)=>{return new Date(val.setHours(val.getHours()+periodValue))}
+      break;
+    case('Day'):
+      periodFunc = (val)=>{return new Date(val.setDate(val.getDate()+periodValue))}
+      break;
+    case('Month'):
+      periodFunc = (val)=>{return new Date(val.setMonth(val.getMonth()+periodValue))}
+      break;
+    case('Year'):
+      periodFunc = (val)=>{return new Date(val.setFullYear(val.getFullYear()+periodValue))}
+      break
+  }
+
   // Get the keys
   let theKeys = Object.keys(dataArray).map(v=>parseInt(v))
   let theLength = theKeys.length
   let pStart = startTime
-  let pEnd   = startTime
+  let dStart = new Date(pStart)
+  let dEnd   = periodFunc(dStart)
+  let pEnd   = dEnd.getTime()
 
   // For every key
   for (let i = 0; i < theLength && theKeys[i] < endTime && pStart < endTime;){
-    //console.log(new Date(theKeys[i]))
     let key = theKeys[i]
     let rainSum = 0
     let thisTime = key
@@ -47,19 +66,15 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
     // update the period start and period end
     // and check the next key
     // sum all the rainfall over the following IEP periods
-    for(let dStart = new Date(pStart), 
-        dEnd   = new Date(dStart.setHours(dStart.getHours()+periodValue))
+    for(dStart = new Date(pStart), 
+        dEnd   = periodFunc(dStart)//new Date(dStart.setHours(dStart.getHours()+periodValue))
         ;
         pEnd < thisTime
         ;
         pStart = pEnd, 
         dStart = new Date(pStart), 
-        dEnd   = new Date(dStart.setHours(dStart.getHours()+periodValue)),
+        dEnd   = periodFunc(dStart),//new Date(dStart.setHours(dStart.getHours()+periodValue)),
         pEnd   = dEnd.getTime()){
-          /*console.log('roll')
-          console.log('roll')
-          console.log('roll')
-          console.log('roll')*/
           outArray.push({
             start: pStart, 
             end:   pEnd,
@@ -72,7 +87,6 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
       i < theKeys.length && 
       new Date(theKeys[i]).getTime() < pEnd; 
       ){
-        //console.log('======================================================')
         rainSum = rainSum + dataArray[theKeys[i].toString()]
         i++
         updated = 1
@@ -84,6 +98,13 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
       vol:   rainSum
     })
 
+    // Move time period forward
+    pStart = pEnd
+    dStart = new Date(pStart)
+    dEnd   = periodFunc(dStart)//new Date(dStart.setHours(dStart.getHours()+periodValue))
+    pEnd   = dEnd.getTime()
+
+    // Move index forward
     if(!updated) i++
   }
 
@@ -111,8 +132,8 @@ function processOut(swmmData) {
       swmmData.contents[targetRG], 
       new Date(Date.UTC(1970, 0, 1, 0, 0, 0)).getTime(),
       new Date(Date.UTC(2013, 0, 1, 0, 0, 0)).getTime(),
-      "Hour",
-      24
+      "Year",
+      1
       )
       console.log(x)
     // Detect yearly rainfall using swmmNode
