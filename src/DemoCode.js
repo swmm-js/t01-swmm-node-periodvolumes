@@ -41,16 +41,23 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
       periodFunc = (val)=>{return new Date(val.setDate(val.getDate()+periodValue))}
       break;
     case('Month'):
-    periodFunc = (val)=>{
-      //console.log(val)
-      let dt = DateTime.fromJSDate(val)
-      dt = dt.plus({months:1})
-      dt = dt.startOf('month')
-      //console.log(dt)
-      dt = dt.toJSDate()
-      //console.log(dt)
-      return dt
-    }
+    // This is ridiculous. There has to be a better way to set month + 1.
+      periodFunc = (val)=>{
+        let oldVal = new Date(val)
+        let addMonth = new Date(val.setMonth(val.getMonth()+periodValue))
+        let firstDay = new Date(addMonth.setDate(1))
+        let dayStart = new Date(firstDay.setHours(0,0,0,0))
+        let dayStart2 = new Date(dayStart.setUTCHours(0,0,0,0))
+        if(dayStart2 <= oldVal){
+          addMonth = new Date(oldVal.setMonth(oldVal.getMonth()+periodValue))
+          firstDay = new Date(addMonth.setDate(1))
+          let addMonth2 = new Date(firstDay.setMonth(firstDay.getMonth()+1))
+          let firstDay2 = new Date(addMonth2.setDate(1))
+          dayStart = new Date(firstDay2.setHours(0,0,0,0))
+          dayStart2 = new Date(dayStart.setUTCHours(0,0,0,0))
+        }
+        return dayStart2
+      }
       break;
     case('Year'):
       periodFunc = (val)=>{return new Date(val.setFullYear(val.getFullYear()+periodValue))}
@@ -62,20 +69,14 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
   let theLength = theKeys.length
   let pStart = startTime
   let dStart = new Date(pStart)
-  console.log(dStart)
   let dEnd   = periodFunc(dStart)
   let pEnd   = dEnd.getTime()
   let i = 0
   // Set the start date to be after the first record, if possible
-  console.log(theLength)
   while(pStart > theKeys[i] && pEnd > theKeys[i] && i < theLength){
     i++
   }
   // For every key
-  console.log(theKeys[i])
-  console.log(pStart)
-  console.log(pEnd)
-  console.log(endTime)
   // Error: If both startTime and endTime are in between valid keys,
   // then theKeys[i] will be greater than endTime  
   for (; i < theLength && pStart < endTime;){
@@ -88,23 +89,19 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
     // and check the next key
     // sum all the rainfall over the following IEP periods
     for(;pEnd < keyTime && pEnd < endTime;){
-      //console.log(pStart)
       dStart = new Date(pStart)
-      //console.log(dStart)
-      //console.log(new Date(dStart))
       dEnd   = periodFunc(dStart)
-      //console.log(dEnd)
       pEnd   = dEnd.getTime()
       let valx = {
         start: pStart, 
         end:   pEnd,
         vol:   0
       }
-      //console.log(valx)
       outArray.push(valx)
       pStart = pEnd
       dStart = new Date(pStart) 
       dEnd   = periodFunc(dStart)
+      pEnd   = dEnd.getTime()
     }
 
     // While the key is between the start time and the end time
@@ -112,30 +109,22 @@ function sumEvents(dataArray, startTime, endTime, periodType, periodValue) {
       i < theKeys.length && 
       new Date(theKeys[i]).getTime() < pEnd; 
       ){
-        //console.log('==========================================')
         rainSum = rainSum + dataArray[theKeys[i].toString()]
         i++
         updated = 1
     }
     // Add the sum to the list of periods.
     if(updated){
-      //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-      console.log('===' + new Date(pStart))
       outArray.push({
         start: pStart, 
         end:   pEnd,
         vol:   rainSum
       })
+      pStart = pEnd
+      dStart = new Date(pStart)
       dEnd   = periodFunc(dStart)
-      //console.log(dEnd)
       pEnd   = dEnd.getTime()
     }
-
-    // Move time period forward
-    pStart = pEnd
-    dStart = new Date(pStart)
-    dEnd   = periodFunc(dStart)//new Date(dStart.setHours(dStart.getHours()+periodValue))
-    pEnd   = dEnd.getTime()
 
     // Move index forward
     if(!updated) i++
@@ -168,9 +157,8 @@ function processOut(swmmData) {
       "Month",
       1
       )
-      console.log(x)
     // Detect yearly rainfall using swmmNode
-    
+    console.log(x)
 
     outString += '\n'
 
