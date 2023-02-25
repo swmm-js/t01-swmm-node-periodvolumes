@@ -26,7 +26,7 @@ const DemoIntro = () => {
         <p>or from npm: </p>
         <p><a href='https://www.npmjs.com/package/@fileops/swmm-node'>https://www.npmjs.com/package/@fileops/swmm-node</a></p>
         <p>
-        You can also contact me at <strong>issac@swmmReact.org</strong>. Thanks so much for taking the time to stop by.
+        You can also contact me at <strong><a href="mailto:issac@swmmReact.org">issac@swmmReact.org</a></strong>. Thanks so much for taking the time to stop by.
         </p>
 
       <h2>Demo Controls</h2>

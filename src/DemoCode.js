@@ -117,13 +117,13 @@ if(outText)
               <input type="date" value={
                 startDate?
                 [startDate.getUTCFullYear(), (startDate.getUTCMonth()+1).toString().padStart(2,'0'), startDate.getUTCDate().toString().padStart(2,'0')].join('-')
-                :undefined} onChange={(e)=>setStartDate(e.target.value)} className="UIparams"/> 
+                :undefined} onChange={(e)=>setStartDate(new Date(e.target.value))} className="UIparams"/> 
             </label>
             <label>End:
               <input type="date" value={
                 endDate?
                 [endDate.getUTCFullYear(), (endDate.getUTCMonth()+1).toString().padStart(2,'0'), endDate.getUTCDate().toString().padStart(2,'0')].join('-')
-                :undefined} onChange={(e)=>setEndDate(e.target.value)} className="UIparams"/> 
+                :undefined} onChange={(e)=>setEndDate(new Date(e.target.value))} className="UIparams"/> 
             </label>
           </div>
         </div>
